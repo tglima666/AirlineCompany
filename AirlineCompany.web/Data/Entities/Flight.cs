@@ -10,8 +10,10 @@ namespace AirlineCompany.web.Data.Entities
     {
         public int ID { get; set; }
 
+        [Required]
+        [MaxLength(50, ErrorMessage = "The field {0} only can contain a maximum {1} characters")]
         [Display(Name = "Flight Number")]
-        public int FlightNumber { get; set; }
+        public string FlightNumber { get; set; }
 
         [Display(Name="Date")]
         public DateTime Date { get; set; }
