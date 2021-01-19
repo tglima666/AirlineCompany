@@ -33,7 +33,7 @@ namespace AirlineCompany.web.Data
         {
             _context.Flights.Add(new Flight
             {
-                FlightNumber = name
+                FlightNumber = name                
             });
         }
     }

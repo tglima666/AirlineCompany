@@ -7,34 +7,34 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using AirlineCompany.web.Data;
 using AirlineCompany.web.Data.Entities;
+using AirlineCompany.web.Data.Repositories;
 
 namespace AirlineCompany.web.Controllers
 {
     public class FlightsController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IRepository _repository;
 
-        public FlightsController(DataContext context)
+        public FlightsController(IRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: Flights
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Flights.ToListAsync());
+            return View(_repository.GetFlights());
         }
 
         // GET: Flights/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var flight = await _context.Flights
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var flight = _repository.GetFlight(id.Value);
             if (flight == null)
             {
                 return NotFound();
@@ -58,22 +58,23 @@ namespace AirlineCompany.web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(flight);
-                await _context.SaveChangesAsync();
+                _repository.AddFlight(flight);
+                await _repository.SaveAllAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             return View(flight);
         }
 
         // GET: Flights/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public IActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var flight = await _context.Flights.FindAsync(id);
+            var flight = _repository.GetFlight(id.Value);
             if (flight == null)
             {
                 return NotFound();
@@ -97,12 +98,12 @@ namespace AirlineCompany.web.Controllers
             {
                 try
                 {
-                    _context.Update(flight);
-                    await _context.SaveChangesAsync();
+                    _repository.UpdateFlight(flight);
+                    await _repository.SaveAllAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!FlightExists(flight.ID))
+                    if (!_repository.FlightExists(flight.ID))
                     {
                         return NotFound();
                     }
@@ -117,15 +118,14 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public IActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var flight = await _context.Flights
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var flight = _repository.GetFlight(id.Value);
             if (flight == null)
             {
                 return NotFound();
@@ -139,15 +139,9 @@ namespace AirlineCompany.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var flight = await _context.Flights.FindAsync(id);
-            _context.Flights.Remove(flight);
-            await _context.SaveChangesAsync();
+            var flight = _repository.GetFlight(id);
+            _repository.RemoveFlight(flight);
+            await _repository.SaveAllAsync();
             return RedirectToAction(nameof(Index));
         }
-
-        private bool FlightExists(int id)
-        {
-            return _context.Flights.Any(e => e.ID == id);
-        }
-    }
 }

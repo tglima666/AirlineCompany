@@ -1,4 +1,5 @@
 ﻿using AirlineCompany.web.Data;
+using AirlineCompany.web.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +32,10 @@ namespace AirlineCompany.web
                 ac.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            //Vou usar a miha classe SeedDb para alimentar as tabelas da BD
             services.AddTransient<SeedDb>();
+
+            services.AddScoped<IRepository, Repository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
