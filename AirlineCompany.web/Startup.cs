@@ -1,9 +1,11 @@
 ﻿using AirlineCompany.web.Data;
+using AirlineCompany.web.Data.Entities;
 using AirlineCompany.web.Data.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,12 +29,26 @@ namespace AirlineCompany.web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Configurar a autenticação
+            services.AddIdentity<User, IdentityRole>(ac =>
+            {
+                ac.User.RequireUniqueEmail = true;
+                ac.Password.RequireDigit = false;
+                ac.Password.RequiredUniqueChars = 0;
+                ac.Password.RequireLowercase = false;
+                ac.Password.RequireUppercase = false;
+                ac.Password.RequireNonAlphanumeric = false;
+                ac.Password.RequiredLength = 6;
+            })
+            .AddEntityFrameworkStores<DataContext>();
+
+            //Vamos usar um serviço de SQLServer
             services.AddDbContext<DataContext>(ac =>
             {
                 ac.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            //Vou usar a miha classe SeedDb para alimentar as tabelas da BD
+            //Vou usar a minha classe SeedDb para alimentar as tabelas da BD
             services.AddTransient<SeedDb>();
 
             services.AddScoped<IRepository, Repository>();
@@ -63,6 +79,7 @@ namespace AirlineCompany.web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>

@@ -20,5 +20,7 @@ namespace AirlineCompany.web.Data.Entities
 
         [Display(Name = "Hour")]
         public DateTime Hour { get; set; }
+
+        public User User { get; set; }
     }
 }

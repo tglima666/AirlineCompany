@@ -144,4 +144,5 @@ namespace AirlineCompany.web.Controllers
             await _repository.SaveAllAsync();
             return RedirectToAction(nameof(Index));
         }
+    }
 }
