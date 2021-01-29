@@ -13,28 +13,28 @@ namespace AirlineCompany.web.Controllers
 {
     public class FlightsController : Controller
     {
-        private readonly IRepository _repository;
+        private readonly IFlightRepository _flightRepository;
 
-        public FlightsController(IRepository repository)
+        public FlightsController(IFlightRepository flightRepository)
         {
-            _repository = repository;
+            _flightRepository = flightRepository;
         }
 
         // GET: Flights
         public IActionResult Index()
         {
-            return View(_repository.GetFlights());
+            return View(_flightRepository.GetAll());
         }
 
         // GET: Flights/Details/5
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var flight = _repository.GetFlight(id.Value);
+            var flight = await _flightRepository.GetByIdAsync(id.Value);
             if (flight == null)
             {
                 return NotFound();
@@ -58,8 +58,7 @@ namespace AirlineCompany.web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _repository.AddFlight(flight);
-                await _repository.SaveAllAsync();
+                await _flightRepository.CreateAsync(flight);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -67,14 +66,14 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Edit/5
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var flight = _repository.GetFlight(id.Value);
+            var flight = await _flightRepository.GetByIdAsync(id.Value);
             if (flight == null)
             {
                 return NotFound();
@@ -98,12 +97,11 @@ namespace AirlineCompany.web.Controllers
             {
                 try
                 {
-                    _repository.UpdateFlight(flight);
-                    await _repository.SaveAllAsync();
+                    await _flightRepository.UpdateAsync(flight);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_repository.FlightExists(flight.ID))
+                    if (! await _flightRepository.ExistAsync(flight.ID))
                     {
                         return NotFound();
                     }
@@ -118,14 +116,14 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var flight = _repository.GetFlight(id.Value);
+            var flight = await _flightRepository.GetByIdAsync(id.Value);
             if (flight == null)
             {
                 return NotFound();
@@ -139,9 +137,8 @@ namespace AirlineCompany.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var flight = _repository.GetFlight(id);
-            _repository.RemoveFlight(flight);
-            await _repository.SaveAllAsync();
+            var flight = await _flightRepository.GetByIdAsync(id);
+            await _flightRepository.DeleteAsync(flight);
             return RedirectToAction(nameof(Index));
         }
     }

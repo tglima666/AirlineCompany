@@ -30,28 +30,29 @@ namespace AirlineCompany.web
         public void ConfigureServices(IServiceCollection services)
         {
             //Configurar a autenticação
-            services.AddIdentity<User, IdentityRole>(ac =>
+            services.AddIdentity<User, IdentityRole>(cfg =>
             {
-                ac.User.RequireUniqueEmail = true;
-                ac.Password.RequireDigit = false;
-                ac.Password.RequiredUniqueChars = 0;
-                ac.Password.RequireLowercase = false;
-                ac.Password.RequireUppercase = false;
-                ac.Password.RequireNonAlphanumeric = false;
-                ac.Password.RequiredLength = 6;
+                cfg.User.RequireUniqueEmail = true;
+                cfg.Password.RequireDigit = false;
+                cfg.Password.RequiredUniqueChars = 0;
+                cfg.Password.RequireLowercase = false;
+                cfg.Password.RequireUppercase = false;
+                cfg.Password.RequireNonAlphanumeric = false;
+                cfg.Password.RequiredLength = 6;
             })
             .AddEntityFrameworkStores<DataContext>();
 
             //Vamos usar um serviço de SQLServer
-            services.AddDbContext<DataContext>(ac =>
+            services.AddDbContext<DataContext>(cfg =>
             {
-                ac.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
+                cfg.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection"));
             });
 
             //Vou usar a minha classe SeedDb para alimentar as tabelas da BD
             services.AddTransient<SeedDb>();
 
-            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IFlightRepository, FlightRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

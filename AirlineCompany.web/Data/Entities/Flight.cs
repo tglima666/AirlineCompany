@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AirlineCompany.web.Data.Entities
 {
-    public class Flight
+    public class Flight : IEntity
     {
         public int ID { get; set; }
 
