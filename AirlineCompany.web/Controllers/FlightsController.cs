@@ -8,16 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using AirlineCompany.web.Data;
 using AirlineCompany.web.Data.Entities;
 using AirlineCompany.web.Data.Repositories;
+using AirlineCompany.web.Helpers;
 
 namespace AirlineCompany.web.Controllers
 {
     public class FlightsController : Controller
     {
         private readonly IFlightRepository _flightRepository;
+        private readonly IUserHelper _userHelper;
 
-        public FlightsController(IFlightRepository flightRepository)
+        public FlightsController(IFlightRepository flightRepository, IUserHelper userHelper)
         {
             _flightRepository = flightRepository;
+            _userHelper = userHelper;
         }
 
         // GET: Flights
@@ -58,8 +61,9 @@ namespace AirlineCompany.web.Controllers
         {
             if (ModelState.IsValid)
             {
+                //TODO: Mudar para o user que depois estiver logado
+                flight.User = await _userHelper.GetUserByEmailAsync("tiago.sa.lima@formandos.cinel.pt");
                 await _flightRepository.CreateAsync(flight);
-
                 return RedirectToAction(nameof(Index));
             }
             return View(flight);
@@ -97,6 +101,8 @@ namespace AirlineCompany.web.Controllers
             {
                 try
                 {
+                    //TODO: Mudar para o user que depois estiver logado
+                    flight.User = await _userHelper.GetUserByEmailAsync("tiago.sa.lima@formandos.cinel.pt");
                     await _flightRepository.UpdateAsync(flight);
                 }
                 catch (DbUpdateConcurrencyException)

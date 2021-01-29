@@ -1,4 +1,5 @@
 ﻿using AirlineCompany.web.Data.Entities;
+using AirlineCompany.web.Helpers;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,13 @@ namespace AirlineCompany.web.Data
     public class SeedDb
     {
         private readonly DataContext _context;
-        private readonly UserManager<User> _userManager;
+        private readonly IUserHelper _userHelper;
         private Random _random;
 
-        public SeedDb(DataContext context, UserManager<User> userManager)
+        public SeedDb(DataContext context, IUserHelper userHelper)
         {
             _context = context;
-            _userManager = userManager;
+            _userHelper = userHelper;
             _random = new Random();
         }
 
@@ -24,7 +25,7 @@ namespace AirlineCompany.web.Data
         {
             await _context.Database.EnsureCreatedAsync();
 
-            var user = await _userManager.FindByEmailAsync("tiago.sa.lima@formandos.cinel.pt");
+            var user = await _userHelper.GetUserByEmailAsync("tiago.sa.lima@formandos.cinel.pt");
 
             if (user == null)
             {
@@ -36,7 +37,7 @@ namespace AirlineCompany.web.Data
                     UserName = "tiago.sa.lima@formandos.cinel.pt"
                 };
 
-                var result = await _userManager.CreateAsync(user, "123456");
+                var result = await _userHelper.AddUserAsync(user, "123456");
 
                 if (result != IdentityResult.Success)
                 {

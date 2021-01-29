@@ -1,6 +1,7 @@
 ﻿using AirlineCompany.web.Data;
 using AirlineCompany.web.Data.Entities;
 using AirlineCompany.web.Data.Repositories;
+using AirlineCompany.web.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -52,7 +53,8 @@ namespace AirlineCompany.web
             services.AddTransient<SeedDb>();
 
             services.AddScoped<IFlightRepository, FlightRepository>();
-            services.AddScoped<ICountryRepository, CountryRepository>();
+            //services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IUserHelper, UserHelper>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
