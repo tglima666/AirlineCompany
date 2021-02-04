@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AirlineCompany.web.Data.Repositories
 {
-    interface IOrderRepository : IGenericRepository<Order>
+    public interface IOrderRepository : IGenericRepository<Order>
     {
         Task<IQueryable<Order>> GetOrderAsync(string username);
     }
