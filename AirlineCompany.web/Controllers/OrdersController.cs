@@ -15,9 +15,17 @@ namespace AirlineCompany.web.Controllers
         {
             _orderRepository = orderRepository;
         }
+
         public async Task<IActionResult> Index()
         {
             var model = await _orderRepository.GetOrderAsync(this.User.Identity.Name);
+            return View(model);
+        }
+
+
+        public async Task<IActionResult> Create()
+        {
+            var model = await _orderRepository.GetDetailTempsAsync(this.User.Identity.Name);
             return View(model);
         }
     }

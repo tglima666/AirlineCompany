@@ -19,6 +19,21 @@ namespace AirlineCompany.web.Data.Repositories
             _userHelper = userHelper;
         }
 
+        public async Task<IQueryable<OrderDetailTemp>> GetDetailTempsAsync(string username)
+        {
+            var user = await _userHelper.GetUserByEmailAsync(username);
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return _context.OrderDetailTemps
+                .Include(o => o.Flight)
+                .Where(o => o.User == user)
+                .OrderBy(o => o.Flight.FlightNumber);
+        }
+
         public async Task<IQueryable<Order>> GetOrderAsync(string username)
         {
             var user = await _userHelper.GetUserByEmailAsync(username);
