@@ -53,8 +53,10 @@ namespace AirlineCompany.web
             services.AddTransient<SeedDb>();
 
             services.AddScoped<IFlightRepository, FlightRepository>();
-            //services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddScoped<IUserHelper, UserHelper>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            //services.AddScoped<ICountryRepository, CountryRepository>();
+
 
             services.Configure<CookiePolicyOptions>(options =>
             {
