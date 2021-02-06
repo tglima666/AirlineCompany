@@ -9,9 +9,11 @@ using AirlineCompany.web.Data;
 using AirlineCompany.web.Data.Entities;
 using AirlineCompany.web.Data.Repositories;
 using AirlineCompany.web.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AirlineCompany.web.Controllers
 {
+    
     public class FlightsController : Controller
     {
         private readonly IFlightRepository _flightRepository;
@@ -47,6 +49,8 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Create
+
+        [Authorize]
         public IActionResult Create()
         {
             return View();
@@ -70,6 +74,8 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Edit/5
+
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -122,6 +128,8 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Delete/5
+
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
