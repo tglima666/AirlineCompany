@@ -17,6 +17,10 @@ namespace AirlineCompany.web.Helpers
         Task<SignInResult> LoginAsync(LoginViewModel model);
 
         Task LogoutAsync();
-        Task<bool> isUserInRoleAsync(User user, string v);
+        Task<bool> IsUserInRoleAsync(User user, string v);
+
+        Task<IdentityResult> UpdateUserAsync(User user);
+
+        Task<IdentityResult> ChangePasswordAsync(User user, string oldPassword, string newPassword);
     }
 }
