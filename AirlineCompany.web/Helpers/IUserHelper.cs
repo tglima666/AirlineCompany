@@ -17,5 +17,6 @@ namespace AirlineCompany.web.Helpers
         Task<SignInResult> LoginAsync(LoginViewModel model);
 
         Task LogoutAsync();
+        Task<bool> isUserInRoleAsync(User user, string v);
     }
 }

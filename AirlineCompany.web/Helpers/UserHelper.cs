@@ -30,6 +30,11 @@ namespace AirlineCompany.web.Helpers
             return await _userManager.FindByEmailAsync(email);
         }
 
+        public Task<bool> isUserInRoleAsync(User user, string v)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<SignInResult> LoginAsync(LoginViewModel model)
         {
             return await _signInManager.PasswordSignInAsync(

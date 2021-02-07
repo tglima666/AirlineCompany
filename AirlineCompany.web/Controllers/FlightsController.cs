@@ -64,9 +64,8 @@ namespace AirlineCompany.web.Controllers
         public async Task<IActionResult> Create([Bind("ID,FlightNumber,Date,Hour")] Flight flight)
         {
             if (ModelState.IsValid)
-            {
-                //TODO: Mudar para o user que depois estiver logado
-                flight.User = await _userHelper.GetUserByEmailAsync("tiago.sa.lima@formandos.cinel.pt");
+            {                
+                flight.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _flightRepository.CreateAsync(flight);
                 return RedirectToAction(nameof(Index));
             }
@@ -106,9 +105,8 @@ namespace AirlineCompany.web.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {
-                    //TODO: Mudar para o user que depois estiver logado
-                    flight.User = await _userHelper.GetUserByEmailAsync("tiago.sa.lima@formandos.cinel.pt");
+                {                    
+                    flight.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _flightRepository.UpdateAsync(flight);
                 }
                 catch (DbUpdateConcurrencyException)
