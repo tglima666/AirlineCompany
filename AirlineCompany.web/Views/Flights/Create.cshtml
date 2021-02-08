@@ -10,12 +10,22 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FlightNumber" class="control-label"></label>
                 <input asp-for="FlightNumber" class="form-control" />
                 <span asp-validation-for="FlightNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" />
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ImageFile" class="control-label"></label>
+                <input asp-for="ImageFile" class="form-control" type="file" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
@@ -26,6 +36,13 @@
                 <label asp-for="Hour" class="control-label"></label>
                 <input asp-for="Hour" class="form-control" />
                 <span asp-validation-for="Hour" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input asp-for="IsAvailable" /> @Html.DisplayNameFor(model => model.IsAvailable)
+                    </label>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

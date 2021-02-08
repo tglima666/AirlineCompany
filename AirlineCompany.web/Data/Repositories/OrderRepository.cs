@@ -43,7 +43,7 @@ namespace AirlineCompany.web.Data.Repositories
                 return null;
             }
 
-            if (await _userHelper.isUserInRoleAsync(user, "Admin"))
+            if (await _userHelper.IsUserInRoleAsync(user, "Admin"))
             {
                 //se o user for o admin
                 return _context.Orders

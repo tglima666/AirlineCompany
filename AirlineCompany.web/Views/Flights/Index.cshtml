@@ -16,10 +16,19 @@
                 @Html.DisplayNameFor(model => model.FlightNumber)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Hour)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsAvailable)
             </th>
             <th></th>
         </tr>
@@ -31,14 +40,26 @@
                 @Html.DisplayFor(modelItem => item.FlightNumber)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    <img src="@Url.Content(item.ImageUrl)" alt="Image" style="width:100px;height:150px;max-width:100%;height:auto" />
+                }
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Hour)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-warning">Edit</a> 
-                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a> 
+                @Html.DisplayFor(modelItem => item.IsAvailable)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-warning">Edit</a>
+                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a>
                 <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-danger">Delete</a>
             </td>
         </tr>
