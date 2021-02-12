@@ -22,6 +22,7 @@ namespace AirlineCompany.web.Data.Entities
         [DisplayFormat(DataFormatString = "{0:N2}")]
         public double Quantity { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:C2}")]
         public decimal Value { get { return this.Price * (decimal)this.Quantity; } }
     }
 }

@@ -25,6 +25,9 @@ namespace AirlineCompany.web.Data
         {
             await _context.Database.EnsureCreatedAsync();
 
+            await _userHelper.CheckRoleAsync("Admin");
+            await _userHelper.CheckRoleAsync("Customer");
+
             var user = await _userHelper.GetUserByEmailAsync("tiago.sa.lima@formandos.cinel.pt");
 
             if (user == null)
@@ -43,9 +46,18 @@ namespace AirlineCompany.web.Data
                 {
                     throw new InvalidOperationException("Could not create the user in seeder");
                 }
+
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
             }
 
-            if(!_context.Flights.Any())
+            var isInRole = await _userHelper.IsUserInRoleAsync(user, "Admin");
+
+            if (!isInRole)
+            {
+                await _userHelper.AddUserToRoleAsync(user, "Admin");
+            }
+
+            if (!_context.Flights.Any())
             {
                 this.AddFlight("FirstFlight", user);
                 await _context.SaveChangesAsync();
@@ -57,6 +69,8 @@ namespace AirlineCompany.web.Data
             _context.Flights.Add(new Flight
             {
                 FlightNumber = name,
+                Price = _random.Next(1000),
+                IsAvailable = true,
                 User = user
             });
         }

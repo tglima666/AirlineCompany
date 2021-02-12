@@ -10,6 +10,8 @@ using AirlineCompany.web.Data.Entities;
 using AirlineCompany.web.Data.Repositories;
 using AirlineCompany.web.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using AirlineCompany.web.Models;
+using System.IO;
 
 namespace AirlineCompany.web.Controllers
 {
@@ -61,15 +63,49 @@ namespace AirlineCompany.web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FlightNumber,Date,Hour")] Flight flight)
+        public async Task<IActionResult> Create([Bind("ID,FlightNumber,Price,ImageFile,Date,Hour")] FlightViewModel view)
         {
             if (ModelState.IsValid)
-            {                
+            {
+                var path = string.Empty;
+
+                if (view.ImageFile != null && view.ImageFile.Length > 0)
+                {
+                    path = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot\\images\\Flights",
+                        view.ImageFile.FileName);
+
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await view.ImageFile.CopyToAsync(stream);
+                    }
+
+                    path = $"~/images/Flights/{view.ImageFile.FileName}";
+                }
+
+                var flight = this.ToFlight(view, path);
+
                 flight.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                 await _flightRepository.CreateAsync(flight);
                 return RedirectToAction(nameof(Index));
             }
-            return View(flight);
+            return View(view);
+        }
+
+        private Flight ToFlight(FlightViewModel view, string path)
+        {
+            return new Flight
+            {
+                ID = view.ID,
+                ImageURL = path,
+                IsAvailable = view.IsAvailable,
+                FlightNumber = view.FlightNumber,
+                Date = view.Date,
+                Hour = view.Hour,
+                Price = view.Price,
+                User = view.User
+            };
         }
 
         // GET: Flights/Edit/5

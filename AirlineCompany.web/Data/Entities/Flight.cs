@@ -16,7 +16,7 @@ namespace AirlineCompany.web.Data.Entities
         public string FlightNumber { get; set; }
 
         [Display(Name = "Image")]
-        public string ImageURL { get; set; }        
+        public string ImageURL { get; set; }
 
         [Display(Name="Date")]
         public DateTime Date { get; set; }
