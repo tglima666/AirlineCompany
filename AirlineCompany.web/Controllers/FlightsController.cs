@@ -51,7 +51,7 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Create
-
+        [Authorize(Roles = "Admin")]
         [Authorize]
         public IActionResult Create()
         {
@@ -71,6 +71,9 @@ namespace AirlineCompany.web.Controllers
 
                 if (view.ImageFile != null && view.ImageFile.Length > 0)
                 {
+                    var guid = Guid.NewGuid().ToString();
+                    var file = $"{guid}.jpg";
+
                     path = Path.Combine(
                         Directory.GetCurrentDirectory(),
                         "wwwroot\\images\\Flights",
@@ -109,8 +112,7 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Edit/5
-
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -123,8 +125,25 @@ namespace AirlineCompany.web.Controllers
             {
                 return NotFound();
             }
-            return View(flight);
+
+            var view = this.ToFlightViewModel(flight);
+            return View(view);
         }
+
+        private object ToFlightViewModel(Flight flight)
+        {
+            return new FlightViewModel
+            {
+                ID = flight.ID,
+                IsAvailable = flight.IsAvailable,
+                ImageURL = flight.ImageURL,
+                FlightNumber = flight.FlightNumber,
+                Price = flight.Price,
+                User = flight.User
+            };
+        }
+
+
 
         // POST: Flights/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -141,10 +160,31 @@ namespace AirlineCompany.web.Controllers
             if (ModelState.IsValid)
             {
                 try
-                {                    
+                {
+                    var path = view.ImageUrl;
+
+                    if (view.ImageFile != null && view.ImageFile.Length > 0)
+                    {
+                        var guid = Guid.NewGuid().ToString();
+                        var file = $"{guid}.jpg";
+
+                        path = Path.Combine(Directory.GetCurrentDirectory(),
+                        "wwwroot\\images\\Products",
+                        file);
+
+                        using (var stream = new FileStream(path, FileMode.Create))
+                        {
+                            await view.ImageFile.CopyToAsync(stream);
+                        }
+
+                        path = $"~/images/Products/{file}";
+                    }
+
+                    var product = this.ToFlight(view, path);
                     flight.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _flightRepository.UpdateAsync(flight);
                 }
+
                 catch (DbUpdateConcurrencyException)
                 {
                     if (! await _flightRepository.ExistAsync(flight.ID))
@@ -162,7 +202,7 @@ namespace AirlineCompany.web.Controllers
         }
 
         // GET: Flights/Delete/5
-
+        [Authorize(Roles = "Admin")]
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
