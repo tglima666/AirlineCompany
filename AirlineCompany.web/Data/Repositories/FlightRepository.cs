@@ -18,7 +18,7 @@ namespace AirlineCompany.web.Data.Repositories
 
         //Método para ir á tabela buscar todos os produtos
         //e colocar numa SelectListItem
-        public IEnumerable<SelectListItem> GetComboProducts()
+        public IEnumerable<SelectListItem> GetComboFlights()
         {
             var list = _context.Flights.Select(p => new SelectListItem
             {

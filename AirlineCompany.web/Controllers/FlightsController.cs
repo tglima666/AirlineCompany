@@ -63,7 +63,7 @@ namespace AirlineCompany.web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FlightNumber,Price,ImageFile,Date,Hour")] FlightViewModel view)
+        public async Task<IActionResult> Create(FlightViewModel view)
         {
             if (ModelState.IsValid)
             {
@@ -77,14 +77,14 @@ namespace AirlineCompany.web.Controllers
                     path = Path.Combine(
                         Directory.GetCurrentDirectory(),
                         "wwwroot\\images\\Flights",
-                        view.ImageFile.FileName);
+                        file);
 
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await view.ImageFile.CopyToAsync(stream);
                     }
 
-                    path = $"~/images/Flights/{view.ImageFile.FileName}";
+                    path = $"~/images/Flights/{file}";
                 }
 
                 var flight = this.ToFlight(view, path);
@@ -130,7 +130,7 @@ namespace AirlineCompany.web.Controllers
             return View(view);
         }
 
-        private object ToFlightViewModel(Flight flight)
+        private FlightViewModel ToFlightViewModel(Flight flight)
         {
             return new FlightViewModel
             {
@@ -150,9 +150,9 @@ namespace AirlineCompany.web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FlightNumber,Date,Hour")] Flight flight)
+        public async Task<IActionResult> Edit(int id, FlightViewModel view)
         {
-            if (id != flight.ID)
+            if (id != view.ID)
             {
                 return NotFound();
             }
@@ -161,7 +161,7 @@ namespace AirlineCompany.web.Controllers
             {
                 try
                 {
-                    var path = view.ImageUrl;
+                    var path = view.ImageURL;
 
                     if (view.ImageFile != null && view.ImageFile.Length > 0)
                     {
@@ -180,14 +180,14 @@ namespace AirlineCompany.web.Controllers
                         path = $"~/images/Products/{file}";
                     }
 
-                    var product = this.ToFlight(view, path);
+                    var flight = this.ToFlight(view, path);
                     flight.User = await _userHelper.GetUserByEmailAsync(this.User.Identity.Name);
                     await _flightRepository.UpdateAsync(flight);
                 }
 
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (! await _flightRepository.ExistAsync(flight.ID))
+                    if (! await _flightRepository.ExistAsync(view.ID))
                     {
                         return NotFound();
                     }
@@ -198,7 +198,7 @@ namespace AirlineCompany.web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(flight);
+            return View(view);
         }
 
         // GET: Flights/Delete/5
